@@ -406,7 +406,7 @@ fn handle_gamepad_inputs(
 ) {
     let mut v = 0.0;
     let delta_multiplier = match pre_mul_delta_time {
-        true => time.delta_seconds(),
+        true => time.delta_secs(),
         false => 1.0,
     };
     if let Some(axis_type) = binding.source.as_axis_type() {
@@ -711,77 +711,77 @@ impl std::fmt::Display for GamepadBindingSource {
 }
 
 impl GamepadBindingSource {
-    pub fn as_axis_type(&self) -> Option<GamepadAxisType> {
+    pub fn as_axis_type(&self) -> Option<GamepadAxis> {
         Some(match self {
-            GamepadBindingSource::LeftStickX => GamepadAxisType::LeftStickX,
-            GamepadBindingSource::LeftStickY => GamepadAxisType::LeftStickY,
-            GamepadBindingSource::RightStickX => GamepadAxisType::RightStickX,
-            GamepadBindingSource::RightStickY => GamepadAxisType::RightStickY,
-            GamepadBindingSource::LeftZ => GamepadAxisType::LeftZ,
-            GamepadBindingSource::RightZ => GamepadAxisType::RightZ,
-            GamepadBindingSource::OtherAxis(v) => GamepadAxisType::Other(*v),
+            GamepadBindingSource::LeftStickX => GamepadAxis::LeftStickX,
+            GamepadBindingSource::LeftStickY => GamepadAxis::LeftStickY,
+            GamepadBindingSource::RightStickX => GamepadAxis::RightStickX,
+            GamepadBindingSource::RightStickY => GamepadAxis::RightStickY,
+            GamepadBindingSource::LeftZ => GamepadAxis::LeftZ,
+            GamepadBindingSource::RightZ => GamepadAxis::RightZ,
+            GamepadBindingSource::OtherAxis(v) => GamepadAxis::Other(*v),
             _ => return None,
         })
     }
-    pub fn from_axis_type(axis: &GamepadAxisType) -> GamepadBindingSource {
+    pub fn from_axis_type(axis: &GamepadAxis) -> GamepadBindingSource {
         match axis {
-            GamepadAxisType::LeftStickX => GamepadBindingSource::LeftStickX,
-            GamepadAxisType::LeftStickY => GamepadBindingSource::LeftStickY,
-            GamepadAxisType::RightStickX => GamepadBindingSource::RightStickX,
-            GamepadAxisType::RightStickY => GamepadBindingSource::RightStickY,
-            GamepadAxisType::LeftZ => GamepadBindingSource::LeftZ,
-            GamepadAxisType::RightZ => GamepadBindingSource::RightZ,
-            GamepadAxisType::Other(v) => GamepadBindingSource::OtherAxis(*v),
+            GamepadAxis::LeftStickX => GamepadBindingSource::LeftStickX,
+            GamepadAxis::LeftStickY => GamepadBindingSource::LeftStickY,
+            GamepadAxis::RightStickX => GamepadBindingSource::RightStickX,
+            GamepadAxis::RightStickY => GamepadBindingSource::RightStickY,
+            GamepadAxis::LeftZ => GamepadBindingSource::LeftZ,
+            GamepadAxis::RightZ => GamepadBindingSource::RightZ,
+            GamepadAxis::Other(v) => GamepadBindingSource::OtherAxis(*v),
         }
     }
 
-    pub fn as_button_type(&self) -> Option<GamepadButtonType> {
+    pub fn as_button_type(&self) -> Option<GamepadButton> {
         Some(match self {
-            GamepadBindingSource::South => GamepadButtonType::South,
-            GamepadBindingSource::East => GamepadButtonType::East,
-            GamepadBindingSource::North => GamepadButtonType::North,
-            GamepadBindingSource::West => GamepadButtonType::West,
-            GamepadBindingSource::LeftTrigger => GamepadButtonType::LeftTrigger2,
-            GamepadBindingSource::LeftSecondaryTrigger => GamepadButtonType::LeftTrigger,
-            GamepadBindingSource::RightTrigger => GamepadButtonType::RightTrigger2,
-            GamepadBindingSource::RightSecondaryTrigger => GamepadButtonType::RightTrigger,
-            GamepadBindingSource::LeftStickClick => GamepadButtonType::LeftThumb,
-            GamepadBindingSource::RightStickClick => GamepadButtonType::RightThumb,
-            GamepadBindingSource::DPadUp => GamepadButtonType::DPadUp,
-            GamepadBindingSource::DPadDown => GamepadButtonType::DPadDown,
-            GamepadBindingSource::DPadLeft => GamepadButtonType::DPadLeft,
-            GamepadBindingSource::DPadRight => GamepadButtonType::DPadRight,
-            GamepadBindingSource::Select => GamepadButtonType::Select,
-            GamepadBindingSource::Start => GamepadButtonType::Start,
-            GamepadBindingSource::Mode => GamepadButtonType::Mode,
-            GamepadBindingSource::C => GamepadButtonType::C,
-            GamepadBindingSource::Z => GamepadButtonType::Z,
-            GamepadBindingSource::OtherButton(v) => GamepadButtonType::Other(*v),
+            GamepadBindingSource::South => GamepadButton::South,
+            GamepadBindingSource::East => GamepadButton::East,
+            GamepadBindingSource::North => GamepadButton::North,
+            GamepadBindingSource::West => GamepadButton::West,
+            GamepadBindingSource::LeftTrigger => GamepadButton::LeftTrigger2,
+            GamepadBindingSource::LeftSecondaryTrigger => GamepadButton::LeftTrigger,
+            GamepadBindingSource::RightTrigger => GamepadButton::RightTrigger2,
+            GamepadBindingSource::RightSecondaryTrigger => GamepadButton::RightTrigger,
+            GamepadBindingSource::LeftStickClick => GamepadButton::LeftThumb,
+            GamepadBindingSource::RightStickClick => GamepadButton::RightThumb,
+            GamepadBindingSource::DPadUp => GamepadButton::DPadUp,
+            GamepadBindingSource::DPadDown => GamepadButton::DPadDown,
+            GamepadBindingSource::DPadLeft => GamepadButton::DPadLeft,
+            GamepadBindingSource::DPadRight => GamepadButton::DPadRight,
+            GamepadBindingSource::Select => GamepadButton::Select,
+            GamepadBindingSource::Start => GamepadButton::Start,
+            GamepadBindingSource::Mode => GamepadButton::Mode,
+            GamepadBindingSource::C => GamepadButton::C,
+            GamepadBindingSource::Z => GamepadButton::Z,
+            GamepadBindingSource::OtherButton(v) => GamepadButton::Other(*v),
             _ => return None,
         })
     }
-    pub fn from_button_type(button: &GamepadButtonType) -> GamepadBindingSource {
+    pub fn from_button_type(button: &GamepadButton) -> GamepadBindingSource {
         match button {
-            GamepadButtonType::South => GamepadBindingSource::South,
-            GamepadButtonType::East => GamepadBindingSource::East,
-            GamepadButtonType::North => GamepadBindingSource::North,
-            GamepadButtonType::West => GamepadBindingSource::West,
-            GamepadButtonType::LeftTrigger2 => GamepadBindingSource::LeftTrigger,
-            GamepadButtonType::LeftTrigger => GamepadBindingSource::LeftSecondaryTrigger,
-            GamepadButtonType::RightTrigger2 => GamepadBindingSource::RightTrigger,
-            GamepadButtonType::RightTrigger => GamepadBindingSource::RightSecondaryTrigger,
-            GamepadButtonType::LeftThumb => GamepadBindingSource::LeftStickClick,
-            GamepadButtonType::RightThumb => GamepadBindingSource::RightStickClick,
-            GamepadButtonType::DPadUp => GamepadBindingSource::DPadUp,
-            GamepadButtonType::DPadDown => GamepadBindingSource::DPadDown,
-            GamepadButtonType::DPadLeft => GamepadBindingSource::DPadLeft,
-            GamepadButtonType::DPadRight => GamepadBindingSource::DPadRight,
-            GamepadButtonType::Select => GamepadBindingSource::Select,
-            GamepadButtonType::Start => GamepadBindingSource::Start,
-            GamepadButtonType::Mode => GamepadBindingSource::Mode,
-            GamepadButtonType::C => GamepadBindingSource::C,
-            GamepadButtonType::Z => GamepadBindingSource::Z,
-            GamepadButtonType::Other(v) => GamepadBindingSource::OtherButton(*v),
+            GamepadButton::South => GamepadBindingSource::South,
+            GamepadButton::East => GamepadBindingSource::East,
+            GamepadButton::North => GamepadBindingSource::North,
+            GamepadButton::West => GamepadBindingSource::West,
+            GamepadButton::LeftTrigger2 => GamepadBindingSource::LeftTrigger,
+            GamepadButton::LeftTrigger => GamepadBindingSource::LeftSecondaryTrigger,
+            GamepadButton::RightTrigger2 => GamepadBindingSource::RightTrigger,
+            GamepadButton::RightTrigger => GamepadBindingSource::RightSecondaryTrigger,
+            GamepadButton::LeftThumb => GamepadBindingSource::LeftStickClick,
+            GamepadButton::RightThumb => GamepadBindingSource::RightStickClick,
+            GamepadButton::DPadUp => GamepadBindingSource::DPadUp,
+            GamepadButton::DPadDown => GamepadBindingSource::DPadDown,
+            GamepadButton::DPadLeft => GamepadBindingSource::DPadLeft,
+            GamepadButton::DPadRight => GamepadBindingSource::DPadRight,
+            GamepadButton::Select => GamepadBindingSource::Select,
+            GamepadButton::Start => GamepadBindingSource::Start,
+            GamepadButton::Mode => GamepadBindingSource::Mode,
+            GamepadButton::C => GamepadBindingSource::C,
+            GamepadButton::Z => GamepadBindingSource::Z,
+            GamepadButton::Other(v) => GamepadBindingSource::OtherButton(*v),
         }
     }
 }

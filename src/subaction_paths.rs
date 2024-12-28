@@ -68,23 +68,23 @@ pub struct RequestedSubactionPaths(pub Vec<SubactionPath>);
 
 #[derive(Debug, Clone, Component, Reflect, PartialEq, Eq, Deref, DerefMut, Default)]
 pub struct SubactionPathMap<T: Sized + Default> {
-    pub paths: EntityHashMap<SubactionPath, T>,
+    pub paths: EntityHashMap<T>,
     #[deref]
     pub any: T,
 }
 impl<T: Default> SubactionPathMap<T> {
     pub fn get_with_path(&self, path: &SubactionPath) -> Option<&T> {
-        self.paths.get(path)
+        self.paths.get(&path.0)
     }
     pub fn entry_with_path(
         &mut self,
         path: SubactionPath,
-    ) -> bevy::utils::hashbrown::hash_map::Entry<'_, SubactionPath, T, EntityHash> {
-        self.paths.entry(path)
+    ) -> bevy::utils::hashbrown::hash_map::Entry<'_, Entity, T, EntityHash> {
+        self.paths.entry(path.0)
     }
 
     pub fn set_value_for_path(&mut self, path: SubactionPath, value: T) {
-        self.paths.entry(path).insert(value);
+        self.paths.entry(path.0).insert(value);
     }
     pub fn new() -> SubactionPathMap<T> {
         default()

@@ -1,7 +1,10 @@
 use bevy::{
     prelude::*,
-    utils::{CowArc, EntityHash, EntityHashMap, HashMap},
+    utils::HashMap,
+    ecs::entity::{EntityHash, EntityHashMap},
 };
+
+use atomicow::CowArc;
 
 use crate::SchminputSet;
 

@@ -20,8 +20,9 @@ bevy = { version = "0.15", default-features = false }
 # bevy_mod_xr = "0.1.0"
 bevy_mod_openxr = { git = "https://github.com/MiniMinerX/bevy_oxr.git", branch = "dev/bevy-0.15.0"}
 bevy_mod_xr = { git = "https://github.com/MiniMinerX/bevy_oxr.git", branch = "dev/bevy-0.15.0"}
-
 openxr = { version = "0.18", default-features = false }
+atomicow = "1.0.0"
+
 
 [lints.clippy]
 too_many_arguments = "allow"
@@ -38,6 +39,7 @@ xr = ["dep:bevy_mod_openxr", "dep:bevy_mod_xr", "dep:openxr"]
 [dependencies]
 bevy.workspace = true
 bevy_mod_xr = { workspace = true, optional = true }
+atomicow = { workspace = true }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 openxr = { workspace = true, optional = true }

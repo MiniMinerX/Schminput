@@ -3,7 +3,7 @@ use std::borrow::Cow;
 
 use bevy::{
     input::{
-        gamepad::{GamepadAxisChangedEvent, GamepadButtonInput},
+        gamepad::{GamepadAxisChangedEvent, GamepadButton},
         keyboard::KeyboardInput,
         mouse::MouseButtonInput,
         ButtonState,

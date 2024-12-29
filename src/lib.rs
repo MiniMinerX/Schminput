@@ -125,7 +125,9 @@ impl PluginGroup for DefaultSchminputPlugins {
 pub struct InActionSet(pub Entity);
 
 #[derive(Debug, Clone, Component, Reflect, Deref, Default)]
-pub struct ActionsInSet(pub EntityHashSet<Entity>);
+pub struct ActionsInSet(pub EntityHashSet);
+
+
 
 /// The Display name of the Action Set.
 #[derive(Debug, Clone, Component, Reflect, Deref)]

@@ -19,8 +19,8 @@ pub struct GamepadPlugin;
 
 /// Use the index of a gamepad in this resource in a subaction path to referebce
 /// a specific gamepad
-#[derive(Default, Resource, Clone)]
-pub struct GamepadRegistery(pub Vec<Gamepad>);
+#[derive(Default, Resource)]
+pub struct GamepadRegistery(pub Vec<Entity>);
 
 impl Plugin for GamepadPlugin {
     fn build(&self, app: &mut App) {
@@ -163,14 +163,15 @@ fn sync_haptics(
     path_query: Query<&GamepadPathSelector>,
     set_query: Query<&ActionSetEnabled>,
     gamepad_registry: Res<GamepadRegistery>,
-    gamepads: Res<Gamepads>,
+    gamepad_query: Query<(Entity, &Gamepad)>,
+    //gamepads: Res<Gamepads>,
 ) {
     for (bindings, out, set, sub_paths) in &haptic_query {
         if !(set_query.get(set.0).is_ok_and(|v| v.0)) {
             continue;
         };
         for binding in bindings.bindings.iter() {
-            for gamepad in gamepads.iter() {
+            for (entity, bevy_gamepad) in &gamepad_query {
                 for e in &out.haptic_feedbacks.any {
                     gamepad_haptic_event.send(match e {
                         GamepadHapticValue::Add {
@@ -179,9 +180,9 @@ fn sync_haptics(
                         } => GamepadRumbleRequest::Add {
                             duration: *duration,
                             intensity: binding.as_rumble_intensity(*intensity),
-                            gamepad,
+                            gamepad: entity,
                         },
-                        GamepadHapticValue::Stop => GamepadRumbleRequest::Stop { gamepad },
+                        GamepadHapticValue::Stop => GamepadRumbleRequest::Stop { gamepad: entity },
                     });
                 }
             }
@@ -193,7 +194,7 @@ fn sync_haptics(
             for binding in bindings.bindings.iter() {
                 match device {
                     GamepadPathSelector::All => {
-                        for gamepad in gamepads.iter() {
+                        for (entity, _bevy_gamepad) in &gamepad_query {
                             for e in out
                                 .haptic_feedbacks
                                 .get_with_path(sub_path)
@@ -206,10 +207,10 @@ fn sync_haptics(
                                     } => GamepadRumbleRequest::Add {
                                         duration: *duration,
                                         intensity: binding.as_rumble_intensity(*intensity),
-                                        gamepad,
+                                        gamepad: entity,
                                     },
                                     GamepadHapticValue::Stop => {
-                                        GamepadRumbleRequest::Stop { gamepad }
+                                        GamepadRumbleRequest::Stop { gamepad: entity }
                                     }
                                 });
                             }
@@ -245,9 +246,11 @@ fn sync_haptics(
 
 #[allow(clippy::type_complexity)]
 fn sync_actions(
-    axis: Res<Axis<GamepadAxis>>,
-    button: Res<Axis<GamepadButton>>,
-    gamepads: Res<Gamepads>,
+    //axis: Res<Axis<GamepadAxis>>,
+    //button: Res<Axis<GamepadButton>>,
+    //gamepads: Res<Gamepads>,
+
+    gamepad_query: Query<(Entity, &Gamepad)>,
     mut query: Query<(
         &GamepadBindings,
         &InActionSet,
@@ -305,12 +308,12 @@ fn sync_actions(
                     }
                 }
             }
-            for gamepad in gamepads.iter() {
+            for (entity, gamepad) in &gamepad_query {
                 handle_gamepad_inputs(
+                    entity,
                     gamepad,
                     binding,
-                    &axis,
-                    &button,
+
                     bool_value.as_deref_mut(),
                     float_value.as_deref_mut(),
                     vec2_value.as_deref_mut(),
@@ -350,12 +353,11 @@ fn sync_actions(
                 }
                 match *device {
                     GamepadPathSelector::All => {
-                        for gamepad in gamepads.iter() {
+                        for (entity, gamepad) in &gamepad_query {
                             handle_gamepad_inputs(
+                                entity,
                                 gamepad,
                                 binding,
-                                &axis,
-                                &button,
                                 bool_value.as_deref_mut(),
                                 float_value.as_deref_mut(),
                                 vec2_value.as_deref_mut(),
@@ -366,94 +368,96 @@ fn sync_actions(
                             );
                         }
                     }
-                    GamepadPathSelector::Gamepad(gamepad) => {
-                        let Some(gamepad) = gamepad_registry.0.get(gamepad).copied() else {
-                            continue;
-                        };
-                        handle_gamepad_inputs(
-                            gamepad,
-                            binding,
-                            &axis,
-                            &button,
-                            bool_value.as_deref_mut(),
-                            float_value.as_deref_mut(),
-                            vec2_value.as_deref_mut(),
-                            Some(*sub_path),
-                            &time,
-                            pre_mul_delta_time,
-                            unbounded,
-                        );
-                    }
-                };
+                    GamepadPathSelector::Gamepad(index) => {
+                        // If your registry stores a Vec<Entity>, try:
+                        if let Some(&target_entity) = gamepad_registry.0.get(index) {
+                            if let Ok((entity, bevy_gamepad)) =
+                                gamepad_query.get(target_entity)
+                            {
+                                handle_gamepad_inputs(
+                                    entity,
+                                    bevy_gamepad,
+                                    binding,
+                                    bool_value.as_deref_mut(),
+                                    float_value.as_deref_mut(),
+                                    vec2_value.as_deref_mut(),
+                                    Some(*sub_path),
+                                    &time,
+                                    pre_mul_delta_time,
+                                    unbounded,
+                                );
+                            }
+                        }
+                }
             }
         }
     }
 }
+}
 
 #[allow(clippy::too_many_arguments)]
 fn handle_gamepad_inputs(
-    gamepad: Gamepad,
+    gamepad_entity: Entity,
+    bevy_gamepad: &Gamepad,
     binding: &GamepadBinding,
-    axis: &Axis<GamepadAxis>,
-    button: &Axis<GamepadButton>,
-    mut bool_value: Option<&mut BoolActionValue>,
-    mut float_value: Option<&mut F32ActionValue>,
-    mut vec2_value: Option<&mut Vec2ActionValue>,
+    bool_value: Option<&mut BoolActionValue>,
+    float_value: Option<&mut F32ActionValue>,
+    vec2_value: Option<&mut Vec2ActionValue>,
     path: Option<SubactionPath>,
     time: &Time,
     pre_mul_delta_time: bool,
     unbounded: bool,
 ) {
-    let mut v = 0.0;
-    let delta_multiplier = match pre_mul_delta_time {
-        true => time.delta_secs(),
-        false => 1.0,
+    // Use .delta_secs() in bevy 0.15
+    let delta_multiplier = if pre_mul_delta_time {
+        time.delta_secs()
+    } else {
+        1.0
     };
+
+    // Gather input
+    let mut v = 0.0;
+
     if let Some(axis_type) = binding.source.as_axis_type() {
-        let Some(v2) = (match unbounded {
-            true => axis.get_unclamped(GamepadAxis::new(gamepad, axis_type)),
-            false => axis.get(GamepadAxis::new(gamepad, axis_type)),
-        }) else {
-            warn!("axis.get returned None, idk what that means");
-            return;
-        };
-        v = v2;
+        // read the axis from the gamepad
+        if let Some(value) = bevy_gamepad.get(axis_type) {
+            v = value;
+        }
     }
     if let Some(button_type) = binding.source.as_button_type() {
-        v = button
-            .get(GamepadButton::new(gamepad, button_type))
-            .unwrap_or_default();
-    }
-    if let Some(bool_value) = bool_value.as_mut() {
-        match path {
-            Some(path) => *bool_value.0.entry_with_path(path).or_default() |= v > 0.1,
-            None => *bool_value.0 |= v > 0.1,
+        if let Some(value) = bevy_gamepad.get(button_type) {
+            v = value;
         }
     }
-    if let Some(float_value) = float_value.as_mut() {
+
+    // Then apply the same logic you had for bool, float, Vec2, etc.
+    if let Some(bool_val) = bool_value {
         match path {
-            Some(path) => {
-                *float_value.0.entry_with_path(path).or_default() +=
-                    v * binding.axis_dir.as_multipier() * delta_multiplier
+            Some(p) => *bool_val.0.entry_with_path(p).or_default() |= v > 0.1,
+            None => *bool_val.0 |= v > 0.1,
+        }
+    }
+    if let Some(float_val) = float_value {
+        match path {
+            Some(p) => {
+                *float_val.0.entry_with_path(p).or_default() +=
+                    v * binding.axis_dir.as_multipier() * delta_multiplier;
             }
-            None => *float_value.0 += v * binding.axis_dir.as_multipier() * delta_multiplier,
+            None => {
+                *float_val.0 += v * binding.axis_dir.as_multipier() * delta_multiplier;
+            }
         }
     }
-    if let Some(vec2_value) = vec2_value.as_mut() {
+    if let Some(vec2_val) = vec2_value {
+        let multiplier = binding.axis_dir.as_multipier() * delta_multiplier;
         match binding.axis {
             InputAxis::X => match path {
-                Some(path) => {
-                    vec2_value.0.entry_with_path(path).or_default().x +=
-                        v * binding.axis_dir.as_multipier() * delta_multiplier
-                }
-                None => vec2_value.0.x += v * binding.axis_dir.as_multipier() * delta_multiplier,
+                Some(p) => vec2_val.0.entry_with_path(p).or_default().x += v * multiplier,
+                None => vec2_val.0.x += v * multiplier,
             },
             InputAxis::Y => match path {
-                Some(path) => {
-                    vec2_value.0.entry_with_path(path).or_default().y +=
-                        v * binding.axis_dir.as_multipier() * delta_multiplier
-                }
-                None => vec2_value.0.y += v * binding.axis_dir.as_multipier() * delta_multiplier,
+                Some(p) => vec2_val.0.entry_with_path(p).or_default().y += v * multiplier,
+                None => vec2_val.0.y += v * multiplier,
             },
         }
     }

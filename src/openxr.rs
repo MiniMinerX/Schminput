@@ -294,7 +294,7 @@ fn sync_input_actions(
             pre_mul_delta_time |= modification_query.get(modification.0).unwrap_or(false);
         }
         let delta_multiplier = match pre_mul_delta_time {
-            true => time.delta_seconds(),
+            true => time.delta_secs(),
             false => 1.0,
         };
         match action.as_mut() {

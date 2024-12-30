@@ -20,7 +20,7 @@ bevy = { version = "0.15", default-features = false }
 # bevy_mod_xr = "0.1.0"
 bevy_mod_openxr = { git = "https://github.com/Schmarni-Dev/bevy_openxr.git", branch = "0.15rc"}
 bevy_mod_xr = { git = "https://github.com/Schmarni-Dev/bevy_openxr.git", branch = "0.15rc"}
-openxr = { version = "0.18", default-features = false }
+openxr = { version = "0.19", default-features = false }
 atomicow = "1.0.0"
 
 

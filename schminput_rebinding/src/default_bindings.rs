@@ -7,7 +7,7 @@ pub enum DefaultBindingsSet {
     LoadCustomBindings,
 }
 
-#[derive(Event, Clone, Copy, Hash, Debug, PartialEq, Eq)]
+#[derive(BufferedEvent, Clone, Copy, Hash, Debug, PartialEq, Eq)]
 pub enum ResetToDefautlBindings {
     All,
     Action(Entity),

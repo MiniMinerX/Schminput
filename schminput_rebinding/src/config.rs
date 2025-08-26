@@ -35,11 +35,11 @@ impl ConfigFilePath {
     }
 }
 
-#[derive(Event, PartialEq, Eq, Clone, Copy, Hash, Default)]
+#[derive(BufferedEvent, PartialEq, Eq, Clone, Copy, Hash, Default)]
 pub struct LoadSchminputConfig;
-#[derive(Event, PartialEq, Eq, Clone, Copy, Hash, Default)]
+#[derive(BufferedEvent, PartialEq, Eq, Clone, Copy, Hash, Default)]
 pub struct SaveSchminputConfig;
-#[derive(Event, PartialEq, Eq, Clone, Copy, Hash, Default)]
+#[derive(BufferedEvent, PartialEq, Eq, Clone, Copy, Hash, Default)]
 pub struct FinnishedSavingSchminputConfig;
 
 impl Plugin for SchminputConfigPlugin {

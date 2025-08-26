@@ -42,7 +42,7 @@ enum PendingKeyboardRebinding {
     },
 }
 
-#[derive(Event, Clone, Copy)]
+#[derive(BufferedEvent, Clone, Copy)]
 pub enum RequestKeyboardRebinding {
     RebindKey {
         binding_index: usize,
@@ -68,7 +68,7 @@ enum PendingGamepadRebinding {
     },
 }
 
-#[derive(Event, Clone, Copy)]
+#[derive(BufferedEvent, Clone, Copy)]
 pub enum RequestGamepadRebinding {
     Rebind {
         binding_index: usize,
@@ -93,7 +93,7 @@ enum PendingMouseButtonRebinding {
         action: Entity,
     },
 }
-#[derive(Event, Clone, Copy)]
+#[derive(BufferedEvent, Clone, Copy)]
 pub enum RequestMouseRebinding {
     RebindButton {
         binding_index: usize,

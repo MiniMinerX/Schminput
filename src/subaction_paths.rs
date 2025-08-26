@@ -24,7 +24,7 @@ fn emit_new_path_events(
     paths.new_paths.clear();
 }
 
-#[derive(Clone, Copy, Debug, Event)]
+#[derive(Clone, Copy, Debug, BufferedEvent)]
 pub struct SubactionPathCreated(pub SubactionPath);
 
 #[derive(Resource, Debug, Default)]

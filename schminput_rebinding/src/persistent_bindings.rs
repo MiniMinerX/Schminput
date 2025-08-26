@@ -39,18 +39,18 @@ fn implicit_table() -> toml_edit::Item {
     toml_edit::Item::Table(w)
 }
 
-#[derive(Event, Clone)]
+#[derive(BufferedEvent, Clone)]
 pub struct DeserializeSchminputConfig {
     pub config: String,
 }
-#[derive(Event, Clone)]
+#[derive(BufferedEvent, Clone)]
 pub struct FinnishedSchminputConfigDeserialization;
 
-#[derive(Event, Clone)]
+#[derive(BufferedEvent, Clone)]
 pub struct SerializeSchminputConfig {
     pub base_config: String,
 }
-#[derive(Event, Clone)]
+#[derive(BufferedEvent, Clone)]
 pub struct FinnishedSchminputConfigSerialization {
     pub output: String,
 }

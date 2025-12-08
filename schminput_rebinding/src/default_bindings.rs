@@ -7,7 +7,7 @@ pub enum DefaultBindingsSet {
     LoadCustomBindings,
 }
 
-#[derive(BufferedEvent, Clone, Copy, Hash, Debug, PartialEq, Eq)]
+#[derive(Message, Clone, Copy, Hash, Debug, PartialEq, Eq)]
 pub enum ResetToDefautlBindings {
     All,
     Action(Entity),
@@ -16,7 +16,7 @@ pub enum ResetToDefautlBindings {
 pub struct RebindingDefaultBindingsPlugin;
 impl Plugin for RebindingDefaultBindingsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<ResetToDefautlBindings>();
+        app.add_message::<ResetToDefautlBindings>();
         app.add_systems(
             PostStartup,
             copy_default_bindings.in_set(DefaultBindingsSet::CopyDefaultBindings),
@@ -30,7 +30,7 @@ type XrBindings<'a> = &'a OxrBindings;
 type XrBindings = ();
 
 fn reset_bindings(
-    mut event: EventReader<ResetToDefautlBindings>,
+    mut event: MessageReader<ResetToDefautlBindings>,
     mut cmds: Commands,
     query: Query<(Entity, &DefaultBindings)>,
     default_bindings_query: Query<(

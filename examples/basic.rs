@@ -72,17 +72,29 @@ fn read_actions(
     jump_action: Query<&BoolActionValue, With<JumpAction>>,
     mut jump_haptic_action: Query<&mut GamepadHapticOutput, With<JumpHapticAction>>,
 ) {
-    // you might want to use .get_single instead to handle a case where the action was destroyed
-    // (which never happens in the crate itself)
-    info!("move: {}", move_action.single().unwrap().0.any);
-    info!("look: {}", look_action.single().unwrap().0.any);
+    // NOTE: .single() returns Result<_, _>, NOT Option
+    info!("move: {:?}", move_action.single());
+    info!("look: {:?}", look_action.single());
 
-    let jumping = jump_action.single().unwrap().0.any;
-    info!("jump: {}", jumping);
+    // ---- FIXED PART ----
+    let jumping_opt = jump_action
+        .single()
+        .ok()
+        .map(|j| j.any);     // extract bool
+
+    let jumping = if let Some(jumping) = jumping_opt {
+        jumping
+    } else {
+        false
+    };
+    // ---------------------
+
+    info!("jump: {:?}", jumping);
+
     if jumping {
-        // and maybe get_single_mut here
-        jump_haptic_action
-            .single_mut().unwrap()
-            .add(Duration::from_millis(50), 1.0);
+        if let Ok(mut haptic) = jump_haptic_action.single_mut() {
+            haptic.add(Duration::from_millis(50), 1.0);
+        }
     }
 }
+

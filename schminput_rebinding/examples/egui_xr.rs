@@ -25,12 +25,12 @@ fn main() {
     app.insert_resource(ShowEguiRebindingWindow(true));
     app.insert_resource(ConfigFilePath::Path(PathBuf::from("./config/egui_xr.toml")));
     app.add_plugins(bevy_mod_openxr::add_xr_plugins(DefaultPlugins));
-    app.add_plugins(FrameTimeDiagnosticsPlugin);
+    app.add_plugins(FrameTimeDiagnosticsPlugin::default());
     app.add_plugins(schminput::DefaultSchminputPlugins);
     app.add_plugins(DefaultSchminputRebindingPlugins);
-    app.world_mut().send_event(LoadSchminputConfig);
+    app.world_mut().write_message(LoadSchminputConfig);
 
-    app.add_plugins(EguiPlugin);
+    app.add_plugins(EguiPlugin::default());
     app.add_systems(Startup, setup);
     app.add_systems(Startup, setup_env);
     app.add_systems(Update, run);
@@ -39,8 +39,8 @@ fn main() {
 }
 fn setup(mut cmds: Commands) {
     cmds.spawn(Camera3d::default());
-    let player_set = cmds.spawn(ActionSet::new("movement", "Movement")).id();
-    let pose_set = cmds.spawn(ActionSet::new("core", "Core")).id();
+    let player_set = cmds.spawn(ActionSet::new("movement", "Movement", 0)).id();
+    let pose_set = cmds.spawn(ActionSet::new("core", "Core", 0)).id();
     cmds.spawn((
         Action::new("move", "Move", player_set),
         MoveAction,

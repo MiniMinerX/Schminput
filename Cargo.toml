@@ -18,7 +18,7 @@ schminput = { path = ".", version = "0.5.0" }
 bevy = { version = "0.18.0", default-features = false, features = ["bevy_gilrs"] }
 #bevy_mod_xr = "0.5.0"
 #bevy_mod_openxr = "0.5.0"
-bevy_mod_openxr = { git = "https://github.com/MiniMinerX/bevy_oxr.git", branch = "fix_dlss", features = ["raw_vulkan_init"] }
+bevy_mod_openxr = { git = "https://github.com/MiniMinerX/bevy_oxr.git", branch = "fix_dlss" }
 bevy_mod_xr = { git = "https://github.com/MiniMinerX/bevy_oxr.git", branch = "fix_dlss" }
 openxr = { version = "0.21.1", default-features = false }
 
@@ -36,6 +36,7 @@ required-features = ["xr"]
 [features]
 default = []
 xr = ["dep:bevy_mod_openxr", "dep:bevy_mod_xr", "dep:openxr"]
+raw_vulkan_init = ["bevy_mod_openxr/raw_vulkan_init"]
 
 [dependencies]
 atomicow = "1.0.0"

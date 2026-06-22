@@ -23,25 +23,24 @@ unexpected_cfgs = { level = "allow", check-cfg = ['cfg(feature, values("dlopen")
 [workspace.dependencies]
 schminput = { path = ".", version = "0.5.0" }
 
-# Bevy 0.19 — same source as renzora_olympus (defined here in the workspace).
-bevy = { git = "https://github.com/bevyengine/bevy", tag = "v0.19.0", default-features = false, features = [
+# Bevy 0.19 — crates.io to match MiniMinerX/bevy_oxr.
+bevy = { version = "0.19", default-features = false, features = [
     "serialize",
     "bluenoise_texture",
     "experimental_pbr_pcss",
     "jpeg",
     "bevy_gilrs",
+    "zstd_rust",
+    "keyboard",
+    "mouse",
 ] }
 
 # OpenXR — MiniMinerX/bevy_oxr on the bevy-0.19-no-static branch.
-# This is a Bevy 0.19 port (fork of awtterpip/bevy_oxr). The "static" feature on the openxr
-# crate is enabled in this workspace for supported targets (windows typically uses linked entry).
-# We declare the version here so that the git source can be resolved consistently
-# when pulled both directly and via the schminput_rebinding dev-dependency.
 bevy_mod_openxr = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "bevy-0.19-no-static", package = "bevy_mod_openxr", version = "0.6.0" }
 bevy_mod_xr = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "bevy-0.19-no-static", package = "bevy_mod_xr", version = "0.6.0" }
 bevy_xr_utils = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "bevy-0.19-no-static", package = "bevy_xr_utils", version = "0.6.0" }
 
-openxr = { version = "0.21", features = ["static"] }
+openxr = { version = "0.21", default-features = false }
 
 [lints.clippy]
 too_many_arguments = "allow"
@@ -73,4 +72,4 @@ bevy_mod_openxr = { workspace = true, optional = true }
 
 [dev-dependencies]
 bevy_mod_openxr = { workspace = true, default-features = true }
-bevy = { workspace = true, default-features = true }
+bevy = { workspace = true, default-features = true, features = ["zstd_rust"] }

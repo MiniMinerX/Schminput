@@ -10,7 +10,7 @@ use crate::{
 };
 use bevy::{
     ecs::{
-        query::{QueryData, QueryFilter},
+        query::{IterQueryData, QueryData, QueryFilter},
         system::SystemParam,
     },
     prelude::*,
@@ -41,7 +41,7 @@ pub struct BindingValue {
 pub struct ProviderParam<
     'w,
     's,
-    ActionData: QueryData + 'static,
+    ActionData: QueryData + IterQueryData + 'static,
     PathData: QueryData + 'static,
     PathFilter: QueryFilter + 'static = (),
 > {
@@ -70,7 +70,7 @@ pub struct ProviderParam<
     pub path_query: Query<'w, 's, PathData, PathFilter>,
 }
 impl<
-    ActionData: QueryData + 'static,
+    ActionData: QueryData + IterQueryData + 'static,
     PathData: QueryData + 'static,
     PathFilter: QueryFilter + 'static,
 > ProviderParam<'_, '_, ActionData, PathData, PathFilter>

@@ -37,6 +37,6 @@ bevy_egui = { version = "0.40.0", features = [
 	"render",
 	"default_fonts",
 ], default-features = false }
-bevy = { workspace = true, default-features = true }
+bevy = { workspace = true, default-features = true, features = ["zstd_rust"] }
 # can't make this optinal, annoying
 bevy_mod_openxr = { workspace = true, optional = false }

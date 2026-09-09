@@ -36,9 +36,9 @@ bevy = { version = "0.19", default-features = false, features = [
 ] }
 
 # OpenXR — MiniMinerX/bevy_oxr on the bevy-0.19-no-static branch.
-bevy_mod_openxr = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "bevy-0.19-no-static", package = "bevy_mod_openxr", version = "0.6.0" }
-bevy_mod_xr = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "bevy-0.19-no-static", package = "bevy_mod_xr", version = "0.6.0" }
-bevy_xr_utils = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "bevy-0.19-no-static", package = "bevy_xr_utils", version = "0.6.0" }
+bevy_mod_openxr = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "olympus-loaded-default", package = "bevy_mod_openxr", version = "0.6.0" }
+bevy_mod_xr = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "olympus-loaded-default", package = "bevy_mod_xr", version = "0.6.0" }
+bevy_xr_utils = { git = "https://github.com/MiniMinerX/bevy_oxr", branch = "olympus-loaded-default", package = "bevy_xr_utils", version = "0.6.0" }
 
 openxr = { version = "0.21", default-features = false }
 
